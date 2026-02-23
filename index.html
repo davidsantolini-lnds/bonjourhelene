@@ -3,55 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bonjour Hélène</title>
+    <title>Bonjour mon Amour</title>
     <style>
+        :root {
+            --bg-1: #fff5f8;
+            --bg-2: #fdeff4;
+            --card: rgba(255, 255, 255, 0.72);
+            --text: #5c4258;
+            --accent: #e08ba7;
+            --accent-strong: #d67494;
+            --shadow: 0 18px 40px rgba(185, 116, 144, 0.18);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            padding: 0;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #333;
+            background: radial-gradient(circle at top, var(--bg-1), var(--bg-2));
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text);
+            padding: 20px;
         }
+
         .container {
+            width: min(92vw, 680px);
             text-align: center;
-            animation: fadeIn 2s ease-in;
+            padding: 46px 28px;
+            border-radius: 28px;
+            background: var(--card);
+            backdrop-filter: blur(6px);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.65);
+            animation: fadeIn 1s ease;
         }
+
         h1 {
-            font-size: 3rem;
+            font-size: clamp(2rem, 5vw, 3.4rem);
             font-weight: 300;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
+            margin: 0;
+            letter-spacing: 1px;
         }
+
+        .countdown-label {
+            margin-top: 24px;
+            margin-bottom: 12px;
+            font-size: 1rem;
+            opacity: 0.85;
+        }
+
+        .countdown {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(58px, 1fr));
+            gap: 10px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .time-box {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 14px;
+            padding: 10px 6px;
+            box-shadow: 0 8px 20px rgba(198, 130, 157, 0.18);
+        }
+
+        .time-value {
+            font-size: clamp(1.1rem, 4vw, 1.8rem);
+            font-weight: 600;
+            color: var(--accent-strong);
+            display: block;
+        }
+
+        .time-label {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
         .btn {
             display: inline-block;
-            margin-top: 20px;
+            margin-top: 28px;
             padding: 12px 30px;
             text-decoration: none;
             color: #fff;
-            background-color: #ff758c;
-            border-radius: 50px;
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 4px 15px rgba(255, 117, 140, 0.3);
+            background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+            border-radius: 999px;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            box-shadow: 0 10px 22px rgba(214, 116, 148, 0.34);
+            font-weight: 500;
         }
+
         .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(255, 117, 140, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 26px rgba(214, 116, 148, 0.4);
         }
+
+        .status {
+            margin-top: 14px;
+            min-height: 22px;
+            font-size: 0.95rem;
+            color: var(--accent-strong);
+            font-weight: 500;
+        }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Bonjour Hélène.</h1>
-        <p>J'ai quelque chose à te dire...</p>
+    <main class="container">
+        <h1>bonjour mon Amour</h1>
+
+        <p class="countdown-label">Compte à rebours avant samedi 28/2, date de la première surprise :</p>
+
+        <section class="countdown" aria-label="Compte à rebours" id="countdown">
+            <div class="time-box">
+                <span class="time-value" id="days">00</span>
+                <span class="time-label">Jours</span>
+            </div>
+            <div class="time-box">
+                <span class="time-value" id="hours">00</span>
+                <span class="time-label">Heures</span>
+            </div>
+            <div class="time-box">
+                <span class="time-value" id="minutes">00</span>
+                <span class="time-label">Minutes</span>
+            </div>
+            <div class="time-box">
+                <span class="time-value" id="seconds">00</span>
+                <span class="time-label">Secondes</span>
+            </div>
+        </section>
+
+        <p id="status" class="status" aria-live="polite"></p>
+
         <a href="message.html" class="btn">Continuer</a>
-    </div>
+    </main>
+
+    <script>
+        const targetDate = new Date("2026-02-28T00:00:00");
+
+        const daysEl = document.getElementById("days");
+        const hoursEl = document.getElementById("hours");
+        const minutesEl = document.getElementById("minutes");
+        const secondsEl = document.getElementById("seconds");
+        const statusEl = document.getElementById("status");
+
+        const pad = (n) => String(n).padStart(2, "0");
+
+        function updateCountdown() {
+            const now = new Date();
+            const diff = targetDate - now;
+
+            if (diff <= 0) {
+                daysEl.textContent = "00";
+                hoursEl.textContent = "00";
+                minutesEl.textContent = "00";
+                secondsEl.textContent = "00";
+                statusEl.textContent = "La première surprise est arrivée 💖";
+                return;
+            }
+
+            const totalSeconds = Math.floor(diff / 1000);
+            const days = Math.floor(totalSeconds / (60 * 60 * 24));
+            const hours = Math.floor((totalSeconds % (60 * 60 * 24)) / (60 * 60));
+            const minutes = Math.floor((totalSeconds % (60 * 60)) / 60);
+            const seconds = totalSeconds % 60;
+
+            daysEl.textContent = pad(days);
+            hoursEl.textContent = pad(hours);
+            minutesEl.textContent = pad(minutes);
+            secondsEl.textContent = pad(seconds);
+            statusEl.textContent = "";
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
 </body>
 </html>
