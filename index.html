@@ -25,7 +25,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 24px;
+            gap: 16px;
             width: 100%;
         }
 
@@ -36,6 +36,14 @@
             text-align: center;
         }
 
+        .hint {
+            margin: 0;
+            text-align: center;
+            font-size: clamp(1rem, 3vw, 1.25rem);
+            opacity: 0.8;
+            letter-spacing: 0.02em;
+        }
+
         .btn {
             color: #fff;
             background: transparent;
@@ -44,13 +52,15 @@
             padding: 10px 16px;
             font-size: clamp(1rem, 4vw, 1.25rem);
             line-height: 1;
+            margin-top: 8px;
         }
     </style>
 </head>
 <body>
     <main>
         <div class="countdown" id="countdown" aria-live="polite">00:00:00:00</div>
-        <a href="message.html" class="btn">→</a>
+        <p class="hint">On laisse le temps faire les choses.</p>
+        <a href="message.html" class="btn" aria-label="Voir un mot">→</a>
     </main>
 
     <script>
