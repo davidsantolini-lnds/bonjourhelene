@@ -29,11 +29,11 @@
             width: 100%;
         }
 
-        .countdown {
-            font-size: clamp(2rem, 10vw, 5rem);
-            letter-spacing: 0.04em;
-            font-variant-numeric: tabular-nums;
+        .message {
+            margin: 0;
+            font-size: clamp(1.8rem, 8vw, 4rem);
             text-align: center;
+            letter-spacing: 0.03em;
         }
 
         .hint {
@@ -58,85 +58,9 @@
 </head>
 <body>
     <main>
-        <div class="countdown" id="countdown" aria-live="polite">00:00:00:00</div>
-        <p class="hint">On laisse le temps faire les choses.</p>
+        <p class="message">La fête continue, simplement…</p>
+        <p class="hint">On profite du moment présent.</p>
         <a href="message.html" class="btn" aria-label="Voir un mot">→</a>
     </main>
-
-    <script>
-        const countdownEl = document.getElementById("countdown");
-
-        const pad = (value) => String(value).padStart(2, "0");
-
-        const parisYearFormatter = new Intl.DateTimeFormat("en-CA", {
-            timeZone: "Europe/Paris",
-            year: "numeric"
-        });
-
-        const parisOffsetFormatter = new Intl.DateTimeFormat("en-US", {
-            timeZone: "Europe/Paris",
-            timeZoneName: "shortOffset",
-            hour: "2-digit",
-            hour12: false
-        });
-
-        function getParisOffsetMs(date) {
-            const tzPart = parisOffsetFormatter
-                .formatToParts(date)
-                .find((part) => part.type === "timeZoneName");
-
-            const match = tzPart && tzPart.value.match(/^GMT([+-])(\d{1,2})(?::(\d{2}))?$/);
-
-            if (!match) {
-                return 0;
-            }
-
-            const sign = match[1] === "+" ? 1 : -1;
-            const hours = Number(match[2]);
-            const minutes = Number(match[3] || 0);
-            return sign * (hours * 60 + minutes) * 60 * 1000;
-        }
-
-        function parisLocalToUtcTimestamp(year, month, day, hour, minute, second) {
-            const approximateUtc = Date.UTC(year, month - 1, day, hour, minute, second);
-            const offset = getParisOffsetMs(new Date(approximateUtc));
-            return approximateUtc - offset;
-        }
-
-        function getCurrentParisYear() {
-            return Number(parisYearFormatter.format(new Date()));
-        }
-
-        function getNextTargetTimestamp() {
-            const now = new Date();
-            let year = getCurrentParisYear();
-            let target = parisLocalToUtcTimestamp(year, 2, 28, 20, 0, 0);
-
-            if (now.getTime() > target) {
-                year += 1;
-                target = parisLocalToUtcTimestamp(year, 2, 28, 20, 0, 0);
-            }
-
-            return target;
-        }
-
-        const targetTimestamp = getNextTargetTimestamp();
-
-        function updateCountdown() {
-            const now = Date.now();
-            const diffMs = Math.max(0, targetTimestamp - now);
-            const totalSeconds = Math.floor(diffMs / 1000);
-
-            const days = Math.floor(totalSeconds / 86400);
-            const hours = Math.floor((totalSeconds % 86400) / 3600);
-            const minutes = Math.floor((totalSeconds % 3600) / 60);
-            const seconds = totalSeconds % 60;
-
-            countdownEl.textContent = `${pad(days)}:${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-        }
-
-        updateCountdown();
-        setInterval(updateCountdown, 1000);
-    </script>
 </body>
 </html>
